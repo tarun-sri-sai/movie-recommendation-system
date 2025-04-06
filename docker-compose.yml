@@ -1,7 +1,9 @@
 services:
   jupyter-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.jupyter
     container_name: jupyter-dev
-    image: jupyter
     ports:
       - "1811:1811"
     volumes:
