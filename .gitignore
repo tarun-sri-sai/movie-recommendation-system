@@ -1,0 +1,8 @@
+# Dataset directory
+data/
+
+# Python virtual env
+venv/
+
+# Model cache directory
+cache/
