@@ -1,0 +1,15 @@
+services:
+  jupyter-dev:
+    container_name: jupyter-dev
+    image: jupyter
+    ports:
+      - "1811:1811"
+    volumes:
+      - ./data:/app/data
+      - ./cache:/app/cache
+    command: >
+      jupyter notebook
+      --port=1811
+      --ip=0.0.0.0
+      --no-browser
+      --allow-root
