@@ -9,3 +9,6 @@ venv/
 
 # Model cache directory
 cache/
+
+# Python compiled files
+*.pyc
