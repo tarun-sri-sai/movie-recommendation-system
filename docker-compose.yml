@@ -8,7 +8,6 @@ services:
       - "1811:1811"
     volumes:
       - ./data:/app/data
-      - ./cache:/app/cache
     command: >
       jupyter notebook
       --port=1811
