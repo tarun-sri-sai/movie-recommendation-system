@@ -1,14 +1,3 @@
-# Git directory
-.git
-
-# Dataset directory
+.git/
+.kaggle/
 data/
-
-# Python virtual env
-venv/
-
-# Model cache directory
-cache/
-
-# Python compiled files
-*.pyc
