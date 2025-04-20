@@ -1,5 +1,36 @@
 # Movie Recommendation System
 
+## Requirements
+
+This project requires the following software:
+
+- **docker:** 28.0 or above
+
+The project also requires an API token to access Kagglehub to download the datasets.
+
+## Prerequisites
+
+1. Copy the Kagglehub API token to ".kaggle/kaggle.json".
+2. Create a directory called "data".
+
+## Usage
+
+1. Run the following command to launch the Jupyter server:
+
+   ```bash
+   docker compose up --build
+   ```
+
+2. Connect to the server URL to run the code in "src/main.ipynb".
+3. Run the **0. Prerequisites** section in the Jupyter notebook.
+4. Search for your movies under "data/movies.csv" and write your ratings to the movies you've watched to "data/input.csv" with the columns `movieId`, `title`, `rating`. (Rated out of 5)
+5. Run the rest of the steps in the notebook.
+6. To stop the Jupyter server, run:
+
+   ```bash
+   docker compose down
+   ```
+
 ## Approach
 
 ### 1. Preparing the movie data
