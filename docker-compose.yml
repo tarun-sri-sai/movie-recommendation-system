@@ -5,13 +5,13 @@ services:
       dockerfile: Dockerfile
     container_name: jupyter-dev
     ports:
-      - "1811:1811"
+      - "8888:8888"
     volumes:
       - ./data:/app/data
       - ./.kaggle:/app/.kaggle:ro
     command: >
       jupyter notebook
-      --port=1811
+      --port=8888
       --ip=0.0.0.0
       --no-browser
       --allow-root
