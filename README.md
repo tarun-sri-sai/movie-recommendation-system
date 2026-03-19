@@ -23,7 +23,7 @@ The project also requires an API token to access Kagglehub to download the datas
 
 2. Connect to the server URL to run the code in "src/main.ipynb".
 3. Run the **0. Prerequisites** section in the Jupyter notebook.
-4. Search for your movies under "data/movies.csv" and write your ratings to the movies you've watched to "data/input.csv" with the columns `movieId`, `title`, `rating`. (Rated out of 5)
+4. Search for your movies under "data/movies.csv" and write your ratings to the movies you've watched to "data/input.csv" with the columns `movieId`, `title`, `rating` where the movies are rated between 1 to 5. The script `src/match_titles.py` can help here by doing a best-effort match on the movie titles.
 5. Run the rest of the steps in the notebook.
 6. To stop the Jupyter server, run:
 

@@ -4,5 +4,6 @@ kagglehub==1.0.0
 notebook==7.3.3
 numpy==1.26.4
 pandas==2.2.3
+RapidFuzz==3.14.3
 scikit-learn==1.6.1
 scipy==1.15.2
