@@ -6,7 +6,7 @@ v1_bp = Blueprint("v1", __name__, url_prefix="/api/v1")
 recommender = Recommender()
 
 
-@v1_bp.route("/recommend", methods=["POST"])
+@v1_bp.route("/recommendations", methods=["POST"])
 def recommend():
     try:
         try:

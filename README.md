@@ -74,13 +74,13 @@ docker compose down
 
 Returns 200 OK if the service is up.
 
-### POST /recommend
+### POST /recommendations
 
 Generate movie recommendations based on user ratings.
 
 ### Input
 
-The `/recommend` endpoint enforces strict validation:
+The `/recommendations` endpoint enforces strict validation:
 
 - **Ratings**: Must be a number between 1 and 5 (inclusive)
   - Invalid: `"Inception": 5.5` (out of range)
