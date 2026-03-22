@@ -70,42 +70,15 @@ docker compose down
 
 ## API
 
+### GET /health
+
+Returns 200 OK if the service is up.
+
 ### POST /recommend
 
 Generate movie recommendations based on user ratings.
 
-**Request body (JSON):**
-
-```json
-{
-  "Inception": 5,
-  "The Matrix": 4.5,
-  "Forrest Gump": 4
-}
-```
-
-**Response (200 OK):**
-
-```json
-{
-  "The Dark Knight": 0.95,
-  "Interstellar": 0.92,
-  "Pulp Fiction": 0.88,
-  ...
-}
-```
-
-(Returns up to 50 recommendations sorted by score descending)
-
-**Error Response (400 Bad Request):**
-
-```json
-{
-  "error": "Rating for 'Movie' must be between 1 and 5 (inclusive), got 5.5"
-}
-```
-
-## Input
+### Input
 
 The `/recommend` endpoint enforces strict validation:
 

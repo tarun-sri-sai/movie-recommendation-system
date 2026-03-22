@@ -32,3 +32,8 @@ def recommend():
             jsonify({"error": f"Internal server error: {str(e)}"}),
             500
         )
+
+
+@v1_bp.route("/health", methods=["GET"])
+def health():
+    return jsonify({"version": "v1"}), 200
