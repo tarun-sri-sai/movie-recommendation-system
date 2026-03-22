@@ -1,5 +1,5 @@
 services:
-  movie-recommendation-system:
+  api:
     build:
       context: .
       dockerfile: Dockerfile
