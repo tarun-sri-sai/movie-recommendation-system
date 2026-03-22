@@ -1,97 +1,125 @@
 # Movie Recommendation System
 
+A production-ready REST API for movie recommendations using hybrid collaborative filtering and content-based recommendations via Flask and Docker.
+
+## Overview
+
+This project provides a Flask-based REST API that:
+
+- Accepts user movie ratings as input
+- Performs fuzzy matching to resolve movie titles
+- Generates personalized movie recommendations using a hybrid approach
+- Returns top 50 recommended movies with scores
+- Caches processed data for fast subsequent requests
+
+### Algorithm
+
+The system uses a **hybrid recommendation approach** combining:
+
+- **Content-based filtering (70%)**: Genre-based similarity scores
+- **Collaborative filtering (30%)**: Similar user preferences
+
 ## Requirements
 
-This project requires the following software:
-
-- **docker:** 28.0 or above
-
-The project also requires an API token to access Kagglehub to download the datasets.
+- **Docker**: 28.0 or above
+- **Kagglehub API credentials** (free account at <https://www.kaggle.com>)
 
 ## Prerequisites
 
-1. Copy the Kagglehub API token to ".kaggle/kaggle.json".
-2. Create a directory called "data".
+1. **Obtain Kagglehub credentials:**
+   - Go to <https://www.kaggle.com/settings/account>.
+   - Scroll to "API" section and click "Create New Token"
+   - This downloads `kaggle.json` with your credentials
 
-## Usage
+2. **Set up environment variables:**
+   - Copy `.env.example` to `.env`
+   - Open `.env` and fill in your Kagglehub credentials:
 
-1. Run the following command to launch the Jupyter server:
+     ```sh
+     KAGGLEHUB_USERNAME=your_kaggle_username
+     KAGGLEHUB_API_KEY=your_api_key_here
+     ```
 
-   ```bash
-   docker compose up --build
-   ```
+## Setup
 
-2. Connect to the server URL to run the code in "src/main.ipynb".
-3. Run the **0. Prerequisites** section in the Jupyter notebook.
-4. Search for your movies under "data/movies.csv" and write your ratings to the movies you've watched to "data/input.csv" with the columns `movieId`, `title`, `rating` where the movies are rated between 1 to 5. The script `src/match_titles.py` can help here by doing a best-effort match on the movie titles.
-5. Run the rest of the steps in the notebook.
-6. To stop the Jupyter server, run:
+### Build the Docker image
 
-   ```bash
-   docker compose down
-   ```
+```bash
+docker compose build
+```
 
-## Approach
+### Run the container
 
-### 1. Preparing the movie data
+```bash
+docker compose up
+```
 
-1. Load the movie data from the file "movies.csv" consisting of the columns `movieId`, `title`, and `genres` into the dataframe `movies_df`.
-2. Drop the rows with missing values.
-3. One-hot encode the `genres` column by splitting with "|".
-4. Store the one-hot encodings back into the `genres` column by encoding them as 32-bit integers (since we have less than 32 genres).
+On first startup, the container will:
 
-### 2. Preparing the input data
+1. Download movie and ratings data from Kagglehub (1-2 minutes)
+1. Process and cache the data locally
+1. Start the Flask API server on port 80
 
-1. Load the movie data from the file "input.csv" consisting of the columns `movieId`, `title` and `rating` into the dataframe `input_df`.
-2. Drop the rows with missing values.
-3. Drop the rows whose `movieId` is not present in `movies_df`.
+Subsequent startups will be faster (load from cache).
 
-### 3. Content-based filtering
+### Stop the container
 
-1. Pre-compute the `genre_mappings`:
-   1. Define a dictionary called `genre_mappings`.
-   2. For each movie in `movies_df`, add the (`movieId`, `genres`) pair to `genre_mappings`.
-2. Pre-compute the `genre_strengths`:
-   1. Define a dictionary called `genre_strengths`.
-   2. Use the `genre_mappings` to get the `genres` of each movie in `input_df` and add the number of times each genre appears in `input_df` into `genre_strengths`.
-3. Compute the genre similarity scores:
-   1. Define a dictionary called `genre_similarities`.
-   2. For each movie in `movies_df`, the genre similarity score of the movie is the sum of the genres that are present in `genre_strengths` multiplied by the strength value of that genre.
-4. Normalize the `genre_similarities` in the range 0 to 1.
+```bash
+docker compose down
+```
 
-### 4. Preparing the rating data
+## API
 
-1. Load the movie data from the file "ratings.csv" consisting of the columns `userId`, `movieId`, `rating`, `timestamp` into the dataframe `ratings_df`.
-2. Pre-compute the `rating_mappings`:
-   1. Define a dictionary called `rating_mappings`.
-   2. For each row in `input_df`, add the (`movieId`, `rating`) pairs into `rating_mappings`.
+### POST /recommend
 
-### 5. Collaborative filtering
+Generate movie recommendations based on user ratings.
 
-1. Compute the user similarity scores:
-   1. Define two dictionaries called `user_scores` and `user_counts`.
-   2. For each row in `ratings_df` filtered by `movieId` present in the `rating_mappings`:
-      1. Calculate the inverse mean absolute error of the user given rating for the movie and the rating in the row.
-      2. Add it to the `user_scores` with the key as `userId`.
-      3. Increment the count in `user_counts` by 1 for each row added with the key as `userId`.
-   3. Define a list of lists called `user_similarities`.
-   4. For each user in `user_scores` if the value in `user_counts` is greater than 0:
-      1. Add a pair containing the `userId` followed by the value for the user in `user_scores`.
-2. Get the top 10 users from the `user_similarities` and put them in `top_users`.
-3. Compute the scores for movies rated by users in `top_users`:
-   1. Define two dictionaries called `movie_ratings` and `movie_counts`.
-   2. For each row in `ratings_df` filtered by `userId` present in the `top_users`:
-      1. Add the `rating` to the `movie_ratings` with the key as `movieId`.
-      2. Increment the count in `movie_counts` by 1 for each row added with the key as `userId`.
-   3. Define a dict called `similar_movie_scores`.
-   4. For each movie in `movie_ratings` if the value in `movie_counts` is greater than 0:
-      1. Add the average rating computed by dividing the value for the movie in `movie_ratings` with the value in `movie_counts` with the key as `movieId`.
-4. Normalize the `similar_movie_scores` in the range 0 to 1.
+**Request body (JSON):**
 
-### 6. Final result
+```json
+{
+  "Inception": 5,
+  "The Matrix": 4.5,
+  "Forrest Gump": 4
+}
+```
 
-1. Compute the final result:
-   1. Define a list of lists called `final_scores`.
-   2. For each `movieId` in `genre_similarities`:
-      1. Add a pair containing the `movieId` followed by the average of the value in `genre_similarities` and the value in `similar_movie_scores`.
-2. Get the top 50 movies from the `final_scores` and store them in `top_movies`.
+**Response (200 OK):**
+
+```json
+{
+  "The Dark Knight": 0.95,
+  "Interstellar": 0.92,
+  "Pulp Fiction": 0.88,
+  ...
+}
+```
+
+(Returns up to 50 recommendations sorted by score descending)
+
+**Error Response (400 Bad Request):**
+
+```json
+{
+  "error": "Rating for 'Movie' must be between 1 and 5 (inclusive), got 5.5"
+}
+```
+
+## Input
+
+The `/recommend` endpoint enforces strict validation:
+
+- **Ratings**: Must be a number between 1 and 5 (inclusive)
+  - Invalid: `"Inception": 5.5` (out of range)
+  - Invalid: `"Inception": "five"` (not a number)
+  - Valid: `"Inception": 5` or `"Inception": 4.5`
+
+- **Movie titles**: Must be non-empty strings, max 1023 characters
+  - Invalid: `"": 5` (empty title)
+  - Invalid: extremely_long_title...: 5` (>1023 chars)
+  - Valid: `"Inception": 5`
+
+- **Request body**: Must be a non-empty JSON object
+  - Invalid: `{}` (empty)
+  - Invalid: `["Inception", 5]` (array, not object)
+  - Valid: `{"Inception": 5}`

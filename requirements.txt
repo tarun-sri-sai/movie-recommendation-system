@@ -1,9 +1,10 @@
-autopep8==2.3.2
-ipykernel==6.29.5
 kagglehub==1.0.0
-notebook==7.3.3
 numpy==1.26.4
 pandas==2.2.3
 RapidFuzz==3.14.3
 scikit-learn==1.6.1
 scipy==1.15.2
+Flask==3.0.0
+gunicorn==21.2.0
+flask-cors==4.0.0
+python-dotenv==1.0.0

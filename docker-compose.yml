@@ -1,17 +1,15 @@
 services:
-  jupyter-dev:
+  movie-recommendation-system:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: jupyter-dev
     ports:
-      - "8888:8888"
+      - "80:80"
     volumes:
-      - ./data:/app/data
-      - ./.kaggle:/app/.kaggle:ro
-    command: >
-      jupyter notebook
-      --port=8888
-      --ip=0.0.0.0
-      --no-browser
-      --allow-root
+      - data:/app/data
+      - cache:/app/cache
+    env_file:
+      - .env
+volumes:
+  data:
+  cache:
