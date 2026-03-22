@@ -19,7 +19,6 @@ class Recommender:
         self.movies_csv = self.data_dir / "movies.csv"
         self.ratings_csv = self.data_dir / "ratings.csv"
         self.cache_movies_json = self.cache_dir / "movies_processed.json"
-        self.cache_metadata_json = self.cache_dir / "metadata.json"
 
         self.chunk_size = 100_000
         self.top_users_count = 10
@@ -42,8 +41,7 @@ class Recommender:
 
     def _load_or_cache_data(self):
         if (
-            self.cache_movies_json.exists() and
-            self.cache_metadata_json.exists()
+            self.cache_movies_json.exists()
         ):
             self._load_from_cache()
         else:
