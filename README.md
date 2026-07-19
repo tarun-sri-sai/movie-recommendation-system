@@ -89,7 +89,7 @@ The `/recommendations` endpoint enforces strict validation:
 
 - **Movie titles**: Must be non-empty strings, max 1023 characters
   - Invalid: `"": 5` (empty title)
-  - Invalid: extremely_long_title...: 5` (>1023 chars)
+  - Invalid: `extremely_long_title...: 5` (>1023 chars)
   - Valid: `"Inception": 5`
 
 - **Request body**: Must be a non-empty JSON object
